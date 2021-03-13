@@ -1,5 +1,9 @@
-package home.sabapathy.cryptozoo;
+package home.sabapathy.cryptozoo.controller;
 
+import home.sabapathy.cryptozoo.model.AnimalDto;
+import home.sabapathy.cryptozoo.model.AnimalMood;
+import home.sabapathy.cryptozoo.model.AnimalTreat;
+import home.sabapathy.cryptozoo.model.AnimalTreatDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

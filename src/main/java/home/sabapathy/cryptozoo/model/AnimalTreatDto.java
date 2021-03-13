@@ -1,4 +1,4 @@
-package home.sabapathy.cryptozoo;
+package home.sabapathy.cryptozoo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
