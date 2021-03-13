@@ -1,20 +1,17 @@
 package home.sabapathy.cryptozoo;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -28,8 +25,10 @@ public class ZooIT {
     private ObjectMapper mapper;
 
     /**
-     * As zookeeper, I want to add animals to my zoo.
+     *  As zookeeper, I want to add animals to my zoo.
+     *
      * 	Rule: Animal should have a name and a type (flying, swimming, walking)     *
+     *
      * 	When I add an animalDto
      * 	Then it is in my zoo
      */
@@ -85,7 +84,7 @@ public class ZooIT {
      * 	Then the animal is still happy
      */
     @Test
-    public void animalMoods() throws Exception {
+    public void unhappyAnimalMoodsAfterTreat() throws Exception {
         AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Horse", AnimalType.WALKING, AnimalMood.SAD);
         mockMvc.perform(post("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +96,25 @@ public class ZooIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(animalTreatDto))
         ).andDo(print()
-        ).andExpect(status().isNoContent());
+        ).andExpect(status().isNoContent()
+        );
+    }
+
+    @Test
+    public void happyAnimalMoodsAfterTreat() throws Exception {
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Dolphin", AnimalType.SWIMMING, AnimalMood.HAPPY);
+        mockMvc.perform(post("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(animalDto))
+        ).andExpect(status().isCreated());
+
+        AnimalTreatDto animalTreatDto = new AnimalTreatDto(animalDto.getId(), AnimalTreat.YES);
+        mockMvc.perform(patch("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(animalTreatDto))
+        ).andDo(print()
+        ).andExpect(status().isNoContent()
+        );
     }
 
     /**
