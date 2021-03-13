@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ZooIT {
+public class ZooControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,7 +34,7 @@ public class ZooIT {
      */
     @Test
     public void addAnimalsToMyZoo() throws Exception {
-        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Camel", AnimalType.WALKING, AnimalMood.SAD);
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Camel", AnimalType.WALKING, AnimalMood.UNHAPPY);
         mockMvc.perform(post("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(animalDto))
@@ -57,7 +57,7 @@ public class ZooIT {
 
     @Test
     public void addAndViewAnimalsOfMyZoo() throws Exception {
-        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Zebra", AnimalType.WALKING, AnimalMood.SAD);
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Zebra", AnimalType.WALKING, AnimalMood.UNHAPPY);
         mockMvc.perform(post("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(animalDto))
@@ -85,7 +85,7 @@ public class ZooIT {
      */
     @Test
     public void unhappyAnimalMoodsAfterTreat() throws Exception {
-        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Horse", AnimalType.WALKING, AnimalMood.SAD);
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Horse", AnimalType.WALKING, AnimalMood.UNHAPPY);
         mockMvc.perform(post("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(animalDto))

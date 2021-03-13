@@ -30,7 +30,7 @@ public class ZooController {
     public List<AnimalDto> feedAnimals(@RequestBody AnimalTreatDto animalTreatDto) {
         List<AnimalDto> animalDtoList = this.animalDtos.stream().filter(a -> a.getId().equals(animalTreatDto.getId())).collect(Collectors.toList());
         if (animalDtoList.size() > 0) {
-            animalDtoList.get(0).setMood(animalTreatDto.getAnimalTreat() == AnimalTreat.YES ? AnimalMood.HAPPY : AnimalMood.SAD);
+            animalDtoList.get(0).setMood(animalTreatDto.getAnimalTreat() == AnimalTreat.YES ? AnimalMood.HAPPY : AnimalMood.UNHAPPY);
         }
         return this.animalDtos;
     }
