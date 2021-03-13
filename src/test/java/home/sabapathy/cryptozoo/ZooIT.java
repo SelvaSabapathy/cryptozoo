@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -24,9 +26,7 @@ public class ZooIT {
 
     /**
      * As zookeeper, I want to add animals to my zoo.
-     *
-     * 	Rule: Animal should have a name and a type (flying, swimming, walking)
-     *
+     * 	Rule: Animal should have a name and a type (flying, swimming, walking)     *
      * 	When I add an animalDto
      * 	Then it is in my zoo
      */
@@ -38,6 +38,8 @@ public class ZooIT {
         ).andExpect(status().isCreated());
     }
 
+
+
     /**
 	 * 	As zookeeper, I want to view animals of my zoo.
 	 *
@@ -46,6 +48,26 @@ public class ZooIT {
 	 * 	Then I see all the animals
 	 */
 
+    @Test
+    public void viewAnimalsOfMyZoo() throws Exception {
+        mockMvc.perform(get("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void addAndViewAnimalsOfMyZoo() throws Exception {
+
+        mockMvc.perform(post("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new AnimalDto()))
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(get("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk())
+        .andExpect(jsonPath("length()").value(1));
+    }
     /**
      *
      * 	As a zookeper, I want to feed my animals.
