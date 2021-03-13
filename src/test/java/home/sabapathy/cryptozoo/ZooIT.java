@@ -1,5 +1,6 @@
 package home.sabapathy.cryptozoo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,9 +35,10 @@ public class ZooIT {
      */
     @Test
     public void addAnimalsToMyZoo() throws Exception {
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Camel", AnimalType.WALKING, AnimalMood.SAD);
         mockMvc.perform(post("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new AnimalDto()))
+                .content(mapper.writeValueAsString(animalDto))
         ).andExpect(status().isCreated());
     }
 
@@ -55,15 +58,16 @@ public class ZooIT {
 
     @Test
     public void addAndViewAnimalsOfMyZoo() throws Exception {
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Zebra", AnimalType.WALKING, AnimalMood.SAD);
         mockMvc.perform(post("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new AnimalDto()))
+                .content(mapper.writeValueAsString(animalDto))
         ).andExpect(status().isCreated());
 
         mockMvc.perform(get("/zoo/animals")
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk()
-//        ).andExpect(jsonPath("length()").value(1));
+        ).andExpect(status().isOk());
+        //        ).andExpect(jsonPath("length()").value(1));
     }
 
     /**
@@ -80,6 +84,21 @@ public class ZooIT {
      * 	When I give it a treat
      * 	Then the animal is still happy
      */
+    @Test
+    public void animalMoods() throws Exception {
+        AnimalDto animalDto = new AnimalDto(UUID.randomUUID(), "Horse", AnimalType.WALKING, AnimalMood.SAD);
+        mockMvc.perform(post("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(animalDto))
+        ).andExpect(status().isCreated());
+
+        AnimalTreatDto animalTreatDto = new AnimalTreatDto(animalDto.getId(), AnimalTreat.YES);
+        mockMvc.perform(patch("/zoo/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(animalTreatDto))
+        ).andDo(print()
+        ).andExpect(status().isNoContent());
+    }
 
     /**
      *

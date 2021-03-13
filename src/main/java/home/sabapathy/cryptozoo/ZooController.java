@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/zoo")
@@ -21,6 +22,16 @@ public class ZooController {
     @GetMapping("/animals")
     @ResponseStatus(HttpStatus.OK)
     public List<AnimalDto> viewAnimals() {
+        return this.animalDtos;
+    }
+
+    @PatchMapping("/animals")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public List<AnimalDto> feedAnimals(@RequestBody AnimalTreatDto animalTreatDto) {
+        List<AnimalDto> animalDtoList = this.animalDtos.stream().filter(a -> a.getId().equals(animalTreatDto.getId())).collect(Collectors.toList());
+        if (animalDtoList.size() > 0) {
+            animalDtoList.get(0).setMood(animalTreatDto.getAnimalTreat() == AnimalTreat.YES ? AnimalMood.HAPPY : AnimalMood.SAD);
+        }
         return this.animalDtos;
     }
 }
