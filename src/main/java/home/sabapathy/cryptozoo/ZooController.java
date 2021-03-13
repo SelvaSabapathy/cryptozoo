@@ -3,22 +3,24 @@ package home.sabapathy.cryptozoo;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/zoo")
 public class ZooController {
 
-    AnimalDto animal;
+    List<AnimalDto> animalDtos = new ArrayList<>();
+
     @PostMapping("/animals")
     @ResponseStatus(HttpStatus.CREATED)
     public void addAnimals(@RequestBody AnimalDto animalDto) {
-        this.animal = animalDto;
+        this.animalDtos.add(animalDto);
     }
 
     @GetMapping("/animals")
     @ResponseStatus(HttpStatus.OK)
-    public AnimalDto viewAnimals() {
-
-        return this.animal;
+    public List<AnimalDto> viewAnimals() {
+        return this.animalDtos;
     }
-
 }
